@@ -1,0 +1,33 @@
+---
+- hosts: default
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Install dependencies
+      apt: name="aptitude"
+      become: true
+    - name: Update system
+      apt: update_cache=yes upgrade=yes cache_valid_time=172800
+      become: true
+    - name: Add repositories
+      apt_repository:
+        repo='ppa:webupd8team/sublime-text-2'
+      become: true
+    - name: Update APT repositories
+      apt: update_cache=yes
+      become: true
+    - name: Install software
+      apt: name={{ item }}
+      with_items:
+        - sublime-text
+        - python-pip
+      become: true
+    - name: Install Python components
+      pip: name={{ item }}
+      with_items:
+        - django
+        - jupyter
+        - bokeh
+        - numpy
+        - pandas
+        - matplotlib
